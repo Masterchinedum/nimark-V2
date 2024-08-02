@@ -1,0 +1,37 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Product {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  updatedAt DateTime @updatedAt
+}
+
+model Store {
+  address      String?
+  contactEmail String?
+  contactPhone String?
+  createdAt    DateTime @default(now())
+  description  String?
+  id           String   @id @default(cuid())
+  name         String?
+  updatedAt    DateTime @updatedAt
+}
+
+model Category {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  updatedAt DateTime @updatedAt
+}
+
+model Admin {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  updatedAt DateTime @updatedAt
+}
