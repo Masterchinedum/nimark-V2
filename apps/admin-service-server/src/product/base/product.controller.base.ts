@@ -31,10 +31,41 @@ export class ProductControllerBase {
     @common.Body() data: ProductCreateInput
   ): Promise<Product> {
     return await this.service.createProduct({
-      data: data,
+      data: {
+        ...data,
+
+        category: data.category
+          ? {
+              connect: data.category,
+            }
+          : undefined,
+
+        store: data.store
+          ? {
+              connect: data.store,
+            }
+          : undefined,
+      },
       select: {
+        category: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
+        description: true,
         id: true,
+        name: true,
+        price: true,
+        stock: true,
+
+        store: {
+          select: {
+            id: true,
+          },
+        },
+
         updatedAt: true,
       },
     });
@@ -48,8 +79,25 @@ export class ProductControllerBase {
     return this.service.products({
       ...args,
       select: {
+        category: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
+        description: true,
         id: true,
+        name: true,
+        price: true,
+        stock: true,
+
+        store: {
+          select: {
+            id: true,
+          },
+        },
+
         updatedAt: true,
       },
     });
@@ -64,8 +112,25 @@ export class ProductControllerBase {
     const result = await this.service.product({
       where: params,
       select: {
+        category: {
+          select: {
+            id: true,
+          },
+        },
+
         createdAt: true,
+        description: true,
         id: true,
+        name: true,
+        price: true,
+        stock: true,
+
+        store: {
+          select: {
+            id: true,
+          },
+        },
+
         updatedAt: true,
       },
     });
@@ -87,10 +152,41 @@ export class ProductControllerBase {
     try {
       return await this.service.updateProduct({
         where: params,
-        data: data,
+        data: {
+          ...data,
+
+          category: data.category
+            ? {
+                connect: data.category,
+              }
+            : undefined,
+
+          store: data.store
+            ? {
+                connect: data.store,
+              }
+            : undefined,
+        },
         select: {
+          category: {
+            select: {
+              id: true,
+            },
+          },
+
           createdAt: true,
+          description: true,
           id: true,
+          name: true,
+          price: true,
+          stock: true,
+
+          store: {
+            select: {
+              id: true,
+            },
+          },
+
           updatedAt: true,
         },
       });
@@ -114,8 +210,25 @@ export class ProductControllerBase {
       return await this.service.deleteProduct({
         where: params,
         select: {
+          category: {
+            select: {
+              id: true,
+            },
+          },
+
           createdAt: true,
+          description: true,
           id: true,
+          name: true,
+          price: true,
+          stock: true,
+
+          store: {
+            select: {
+              id: true,
+            },
+          },
+
           updatedAt: true,
         },
       });

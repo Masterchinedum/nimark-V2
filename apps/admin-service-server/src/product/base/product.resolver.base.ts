@@ -17,7 +17,11 @@ import { Product } from "./Product";
 import { ProductCountArgs } from "./ProductCountArgs";
 import { ProductFindManyArgs } from "./ProductFindManyArgs";
 import { ProductFindUniqueArgs } from "./ProductFindUniqueArgs";
+import { CreateProductArgs } from "./CreateProductArgs";
+import { UpdateProductArgs } from "./UpdateProductArgs";
 import { DeleteProductArgs } from "./DeleteProductArgs";
+import { Category } from "../../category/base/Category";
+import { Store } from "../../store/base/Store";
 import { ProductService } from "../product.service";
 @graphql.Resolver(() => Product)
 export class ProductResolverBase {
@@ -51,6 +55,63 @@ export class ProductResolverBase {
   }
 
   @graphql.Mutation(() => Product)
+  async createProduct(
+    @graphql.Args() args: CreateProductArgs
+  ): Promise<Product> {
+    return await this.service.createProduct({
+      ...args,
+      data: {
+        ...args.data,
+
+        category: args.data.category
+          ? {
+              connect: args.data.category,
+            }
+          : undefined,
+
+        store: args.data.store
+          ? {
+              connect: args.data.store,
+            }
+          : undefined,
+      },
+    });
+  }
+
+  @graphql.Mutation(() => Product)
+  async updateProduct(
+    @graphql.Args() args: UpdateProductArgs
+  ): Promise<Product | null> {
+    try {
+      return await this.service.updateProduct({
+        ...args,
+        data: {
+          ...args.data,
+
+          category: args.data.category
+            ? {
+                connect: args.data.category,
+              }
+            : undefined,
+
+          store: args.data.store
+            ? {
+                connect: args.data.store,
+              }
+            : undefined,
+        },
+      });
+    } catch (error) {
+      if (isRecordNotFoundError(error)) {
+        throw new GraphQLError(
+          `No resource was found for ${JSON.stringify(args.where)}`
+        );
+      }
+      throw error;
+    }
+  }
+
+  @graphql.Mutation(() => Product)
   async deleteProduct(
     @graphql.Args() args: DeleteProductArgs
   ): Promise<Product | null> {
@@ -64,5 +125,33 @@ export class ProductResolverBase {
       }
       throw error;
     }
+  }
+
+  @graphql.ResolveField(() => Category, {
+    nullable: true,
+    name: "category",
+  })
+  async getCategory(
+    @graphql.Parent() parent: Product
+  ): Promise<Category | null> {
+    const result = await this.service.getCategory(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
+  }
+
+  @graphql.ResolveField(() => Store, {
+    nullable: true,
+    name: "store",
+  })
+  async getStore(@graphql.Parent() parent: Product): Promise<Store | null> {
+    const result = await this.service.getStore(parent.id);
+
+    if (!result) {
+      return null;
+    }
+    return result;
   }
 }

@@ -7,31 +7,68 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Product {
-  createdAt DateTime @default(now())
-  id        String   @id @default(cuid())
-  updatedAt DateTime @updatedAt
-}
-
 model Store {
   address      String?
   contactEmail String?
   contactPhone String?
-  createdAt    DateTime @default(now())
+  createdAt    DateTime  @default(now())
   description  String?
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   name         String?
-  updatedAt    DateTime @updatedAt
+  products     Product[]
+  updatedAt    DateTime  @updatedAt
+}
+
+model Product {
+  category    Category? @relation(fields: [categoryId], references: [id])
+  categoryId  String?
+  createdAt   DateTime  @default(now())
+  description String?
+  id          String    @id @default(cuid())
+  name        String?
+  price       Float?
+  stock       Int?
+  store       Store?    @relation(fields: [storeId], references: [id])
+  storeId     String?
+  updatedAt   DateTime  @updatedAt
 }
 
 model Category {
-  createdAt DateTime @default(now())
-  id        String   @id @default(cuid())
-  updatedAt DateTime @updatedAt
+  createdAt      DateTime  @default(now())
+  description    String?
+  id             String    @id @default(cuid())
+  name           String?
+  parentCategory String?
+  products       Product[]
+  updatedAt      DateTime  @updatedAt
 }
 
 model Admin {
   createdAt DateTime @default(now())
   id        String   @id @default(cuid())
   updatedAt DateTime @updatedAt
+}
+
+model Order {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  updatedAt DateTime @updatedAt
+}
+
+model Wishlist {
+  createdAt DateTime @default(now())
+  id        String   @id @default(cuid())
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
 }
